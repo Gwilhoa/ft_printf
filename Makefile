@@ -6,38 +6,62 @@
 #    By: gchatain <gchatain@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:49:48 by gchatain          #+#    #+#              #
-#    Updated: 2022/01/08 14:34:02 by gchatain         ###   ########.fr        #
+#    Updated: 2022/04/11 17:31:35 by gchatain         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ft_printf.c putnbr.c printf_function.c
+ERASE		=	\033[2K\r
+GREY		=	\033[30m
+RED			=	\033[31m
+GREEN		=	\033[32m
+YELLOW		=	\033[33m
+BLUE		=	\033[34m
+PINK		=	\033[35m
+CYAN		=	\033[36m
+WHITE		=	\033[37m
+BOLD		=	\033[1m
+UNDER		=	\033[4m
+SUR			=	\033[7m
+END			=	\033[0m
 
-OBJS = ${SRCS:.c=.o}
+LST_SRCS =   ft_printf.c putnbr.c printf_function.c
 
-HEADER = ft_printf.h
+LST_OBJS =		${LST_SRCS:.c=.o}
+SRCS =			$(addprefix sources/,$(LST_SRCS))
+OBJS =			$(addprefix .objects/,$(LST_OBJS))
+INCLUDES =		includes/ft_printf.h
+DIR_INCLUDES =	$(sort $(addprefix -I, $(dir $(INCLUDES))))
+CC =			gcc
+CFLAGS =		-Wall -Wextra -Werror
+NAME =			ft_printf.a
+RM =			rm -f
 
-NAME = libftprintf.a
+update:
+	git pull
 
-CC = gcc
+all:	update ${NAME}
 
-RM = rm -f
+.objects/%.o:		sources/%.c ${INCLUDES} | .objects
+		${CC} ${CFLAGS} -c $< -o $@ ${DIR_INCLUDES}
+		printf "${ERASE}${YELLOW}[BUILD]${END} $@"
 
-CFLAGS = -Wall -Wextra -Werror
-
-%.o : %.c  ${HEADER}
-	${CC} ${CFLAGS} -c $< -o $@
-
-$(NAME):	${OBJS}
-	ar -rcs ${NAME} ${OBJS}
-
-all :		${NAME}
+${NAME}:	${OBJS} ${INCLUDES} Makefile
+		ar -rcs ${NAME} ${OBJS} $(LIB)
+		printf "${ERASE}${GREEN}[DONE]${END} ${NAME}\n"
 
 clean:
-	${RM} ${OBJS} ${OBJS_BONUS}
+		${RM} ${OBJS}
+		printf "${RED}[DELETE]${END} objects directory"
 
-fclean:		clean
-	${RM} ${NAME}
+fclean:	clean
+		${RM} -r ${NAME} .objects
+		printf "${ERASE}${RED}[DELETE]${END} ${NAME}\n"
 
-re: fclean all
+re:		fclean all
 
-.PHONY: all clean fclean re
+.objects:
+		mkdir -p .objects
+
+.PHONY:	all clean fclean re
+
+.SILENT:
