@@ -6,7 +6,7 @@
 #    By: gchatain <gchatain@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/14 17:49:48 by gchatain          #+#    #+#              #
-#    Updated: 2022/04/11 17:31:35 by gchatain         ###   ########lyon.fr    #
+#    Updated: 2022/04/12 13:29:43 by gchatain         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,17 +36,14 @@ CFLAGS =		-Wall -Wextra -Werror
 NAME =			ft_printf.a
 RM =			rm -f
 
-update:
-	git pull
-
-all:	update ${NAME}
+all:	${NAME}
 
 .objects/%.o:		sources/%.c ${INCLUDES} | .objects
 		${CC} ${CFLAGS} -c $< -o $@ ${DIR_INCLUDES}
 		printf "${ERASE}${YELLOW}[BUILD]${END} $@"
 
 ${NAME}:	${OBJS} ${INCLUDES} Makefile
-		ar -rcs ${NAME} ${OBJS} $(LIB)
+		ar -rcs ${NAME} ${OBJS}
 		printf "${ERASE}${GREEN}[DONE]${END} ${NAME}\n"
 
 clean:
